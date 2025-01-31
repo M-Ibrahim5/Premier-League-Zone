@@ -2,6 +2,7 @@ package com.PL.Premier_Zone.Service;
 
 import com.PL.Premier_Zone.Model.Player;
 import com.PL.Premier_Zone.Repository.PlayerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.*;
@@ -51,5 +52,31 @@ public class PlayerService {
                         .collect(Collectors.toList());
     }
 
+    public Player addPlayer(Player player){
+        playerRepository.save(player);
+        return player;
+    }
+
+    public Player updatePlayer(Player updatePlayer) {
+        Optional<Player> existPlayer = playerRepository.findByName(updatePlayer.getName());
+
+        if (existPlayer.isPresent()) {
+            Player player = existPlayer.get();
+            player.setTeam(updatePlayer.getTeam());
+            player.setName(updatePlayer.getName());
+            player.setPos(updatePlayer.getPos());
+            player.setNation(updatePlayer.getNation());
+
+            playerRepository.save(player);
+            return player;
+        } else {
+            throw new RuntimeException("Player not found");
+        }
+    }
+
+    @Transactional // this annotation make sure if the deletion fails for any reason, the transaction will be rolled back.
+    public void deletPlayer(String playerName){
+        playerRepository.deleteByName(playerName);
+    }
 
 }
