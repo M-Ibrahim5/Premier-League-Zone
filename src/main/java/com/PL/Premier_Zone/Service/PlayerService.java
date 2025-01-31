@@ -23,7 +23,7 @@ public class PlayerService {
     }
     public List<Player> getPlayerFromTeam(String teamName){
         return playerRepository.findAll().stream().filter(
-                player -> teamName.equals(player.getTeam()))
+                player -> player.getTeam().toLowerCase().equals(teamName.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +70,9 @@ public class PlayerService {
             playerRepository.save(player);
             return player;
         } else {
-            throw new RuntimeException("Player not found");
+
+            //throw new RuntimeException("Player not found");
+            return null;
         }
     }
 
